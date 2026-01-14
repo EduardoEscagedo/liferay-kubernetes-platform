@@ -1,0 +1,26 @@
+# Kubernetes runtime
+*.log
+*.pid
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Data / volumes (CRÍTICO)
+data/
+*/data/
+*/elasticsearch*
+*/hypersonic*
+*/document_library*
+
+# Secrets
+*.env
+*.key
+*.crt
+*.pem
+
+# Local jars
+*.jar

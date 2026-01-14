@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liferay
+  namespace: liferay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liferay
+  template:
+    metadata:
+      labels:
+        app: liferay
+    spec:
+      securityContext:
+        fsGroup: 1000
+
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /opt/liferay/data"]
+          volumeMounts:
+            - name: liferay-data
+              mountPath: /opt/liferay/data
+
+        - name: install-postgres-driver
+          image: curlimages/curl:8.6.0
+          command:
+            - sh
+            - -c
+            - >
+              curl -L
+              https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+              -o /opt/liferay/tomcat/lib/postgresql.jar
+          volumeMounts:
+            - name: liferay-lib
+              mountPath: /opt/liferay/tomcat/lib
+
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
+
+      containers:
+        - name: liferay
+          image: liferay/dxp:7.4.13-u95
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: LIFERAY_JAVA_OPTS_APPEND
+              value: "-Xms2048m -Xmx4096m"
+            - name: LIFERAY_DISABLE_TRIAL_LICENSE
+              value: "false"
+
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "500m"
+            limits:
+              memory: "6Gi"
+              cpu: "2"
+
+          volumeMounts:
+            - name: liferay-data
+              mountPath: /opt/liferay/data
+
+            - name: liferay-config
+              mountPath: /opt/liferay/portal-ext.properties
+              subPath: portal-ext.properties
+
+            - name: liferay-lib
+              mountPath: /opt/liferay/tomcat/lib
+
+      volumes:
+        - name: liferay-data
+          persistentVolumeClaim:
+            claimName: liferay-pvc
+
+        - name: liferay-config
+          configMap:
+            name: liferay-portal-ext
+
+        - name: liferay-lib
+          emptyDir: {}
+
