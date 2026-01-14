@@ -16,10 +16,16 @@ spec:
       securityContext:
         fsGroup: 1000
 
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
+
       initContainers:
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "chown -R 1000:1000 /opt/liferay/data"]
+          command:
+            - sh
+            - -c
+            - chown -R 1000:1000 /opt/liferay/data
           volumeMounts:
             - name: liferay-data
               mountPath: /opt/liferay/data
@@ -30,19 +36,17 @@ spec:
             - sh
             - -c
             - >
-              curl -L
-              https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
-              -o /opt/liferay/tomcat/lib/postgresql.jar
+              curl -L https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+              -o /opt/liferay/osgi/lib/postgresql.jar
           volumeMounts:
-            - name: liferay-lib
-              mountPath: /opt/liferay/tomcat/lib
-
-      nodeSelector:
-        node-role.kubernetes.io/worker: ""
+            - name: liferay-osgi-lib
+              mountPath: /opt/liferay/osgi/lib
 
       containers:
         - name: liferay
           image: liferay/dxp:7.4.13-u95
+          imagePullPolicy: IfNotPresent
+
           ports:
             - containerPort: 8080
 
@@ -54,11 +58,11 @@ spec:
 
           resources:
             requests:
-              memory: "3Gi"
               cpu: "500m"
+              memory: "3Gi"
             limits:
-              memory: "6Gi"
               cpu: "2"
+              memory: "6Gi"
 
           volumeMounts:
             - name: liferay-data
@@ -68,8 +72,8 @@ spec:
               mountPath: /opt/liferay/portal-ext.properties
               subPath: portal-ext.properties
 
-            - name: liferay-lib
-              mountPath: /opt/liferay/tomcat/lib
+            - name: liferay-osgi-lib
+              mountPath: /opt/liferay/osgi/lib
 
       volumes:
         - name: liferay-data
@@ -80,6 +84,6 @@ spec:
           configMap:
             name: liferay-portal-ext
 
-        - name: liferay-lib
+        - name: liferay-osgi-lib
           emptyDir: {}
 
