@@ -55,6 +55,8 @@ spec:
               value: "-Xms2048m -Xmx4096m"
             - name: LIFERAY_DISABLE_TRIAL_LICENSE
               value: "false"
+            - name: LIFERAY_DISABLE_ELASTICSEARCH_SIDECAR
+              value: "true"
 
           resources:
             requests:
@@ -75,6 +77,10 @@ spec:
             - name: liferay-osgi-lib
               mountPath: /opt/liferay/osgi/lib
 
+            - name: liferay-osgi-config
+              mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.cfg
+              subPath: com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.cfg
+
       volumes:
         - name: liferay-data
           persistentVolumeClaim:
@@ -86,4 +92,8 @@ spec:
 
         - name: liferay-osgi-lib
           emptyDir: {}
+
+        - name: liferay-osgi-config
+          configMap:
+            name: liferay-elasticsearch-config
 
