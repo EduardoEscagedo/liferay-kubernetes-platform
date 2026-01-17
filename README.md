@@ -6,7 +6,7 @@ The goal of this project is to demonstrate real-world **DevOps / Platform Engine
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
 - Deploy Liferay DXP on Kubernetes
 - Use Infrastructure as Code (IaC)
@@ -18,7 +18,7 @@ The goal of this project is to demonstrate real-world **DevOps / Platform Engine
 
 ---
 
-## 🏗 Architecture Overview
+## Architecture Overview
 
 - Kubernetes cluster (1 control-plane, 1 worker)
 - Liferay DXP 7.4
@@ -56,7 +56,7 @@ Grafana
 
 ---
 
-## 🌐 Exposed Services
+## Exposed Services
 
 | Service   | Access Method | Example URL |
 |----------|--------------|-------------|
@@ -67,7 +67,7 @@ Grafana
 
 ---
 
-## 🔍 Elasticsearch Integration
+## Elasticsearch Integration
 
 An external Elasticsearch cluster is deployed inside Kubernetes and configured for **remote operation** with Liferay.
 
@@ -80,7 +80,7 @@ Index creation and reindexing are performed explicitly from Liferay and verified
 
 ---
 
-## 📊 Observability
+## Observability
 
 This platform includes a full observability stack based on **kube-prometheus-stack**, installed and managed via **Helm**, reflecting real-world operational practices.
 
@@ -103,7 +103,7 @@ Metrics observed:
 
 ---
 
-## 🛠 Monitoring Installation
+## Monitoring Installation
 
 The monitoring stack is installed using Helm rather than custom Kubernetes manifests.
 
@@ -120,7 +120,7 @@ Ingress resources for Grafana access are defined separately under `k8s/ingress/`
 
 ---
 
-## 🚀 Current Status
+## Current Status
 
 **Phase 1 – Platform Bootstrap (Completed)**
 
@@ -134,7 +134,7 @@ Ingress resources for Grafana access are defined separately under `k8s/ingress/`
 
 ---
 
-## 🔜 Next Steps
+## Next Steps
 
 - JVM metrics via JMX Exporter
 - Alerting rules (CPU, memory, latency)
@@ -145,7 +145,7 @@ Ingress resources for Grafana access are defined separately under `k8s/ingress/`
 
 ---
 
-## 🧠 Notes
+## Notes
 
 This project focuses on **realistic infrastructure patterns** rather than simplified demos.
 
